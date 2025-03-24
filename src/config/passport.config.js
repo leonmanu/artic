@@ -3,8 +3,8 @@ const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const fs = require('fs');
 
 // Carga las credenciales desde client_secret.json
-const credentials = JSON.parse(process.env.GOOGLE_CLIENT_SECRET);
-
+const config = process.env.CONFIG_PASSPORT ? JSON.parse(process.env.CONFIG_PASSPORT) : {};
+    const credentials = JSON.parse(fs.readFileSync('client_secret.json'));
 // Extrae los valores necesarios
 const CLIENT_ID = credentials.web.client_id;
 const CLIENT_SECRET = credentials.web.client_secret;
