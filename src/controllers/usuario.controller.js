@@ -56,10 +56,10 @@ const post = (req, res) => {
     const nivel = nameJson[1]
 
     const obj = req.body
-    const resultado = usuarioService.post(obj)
+    const resultado = usuarioService.post(obj, nameJson)
     if (tipo === 'Escuela') {
         if(nivel === 'Secundaria'){
-            return res.redirect("/estudiante/entrantes")
+            return res.redirect("/tarea")
         } else {
             return res.redirect("/estudiante/salientes/" + obj.clave)
         }
@@ -70,8 +70,13 @@ const post = (req, res) => {
 }
 
 const formAlta =  async (req, res) => {
+    const id = req.session.user.id;
     const claveEscuelas = await escuelaService.getColumna('clave')
-    const user = req.session.user
+    const usuarioPorID = await usuarioService.getPorIdGoogle(id)
+    console.log(usuarioPorID)
+
+
+    const user = usuarioPorID || req.session.user
     res.render('pages/usuario/formAlta', {user, claveEscuelas})
 }
 

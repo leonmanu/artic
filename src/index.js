@@ -1,5 +1,4 @@
 require('dotenv').config(); // Esto debe ser lo PRIMERO en tu archivo
-console.log('GOOGLE_CLIENT_SECRET:', process.env.GOOGLE_CLIENT_SECRET); // Para verificar
 
 const app = require('./app')
 

@@ -37,6 +37,25 @@ const getColumna = async (clave) => {
     }
 }
 
+const getPorIdGoogle = async (idGooogle) => {
+    try {
+        const registros = await get();
+
+        if (!registros.length) {
+            console.warn("No se encontraron registros.")
+            return []
+        }
+
+        const resultado = await registros.filter(row => row.id === idGooogle)
+
+        return resultado[0]
+
+    } catch (error) {
+        console.error("Error al procesar los datos1:", error.message)
+        return []
+    }
+}
+
 const getSiExiste = async (email, tipo) => {
     try {
         const registros = await get();
@@ -107,15 +126,21 @@ const getSiExiste = async (email, tipo) => {
 //     }
 // }
 
-const post = async (objeto) => {
+const post = async (objeto, nameJson) => {
     try {
-        const registros = await usuarioSheet.post(objeto);
+
+        const objetoProcesado = await {
+            ...objeto,
+            clave: nameJson[1]+nameJson[3],
+        }
+        console.log("UsuarioService objetoProcesado: ", objetoProcesado)
+        const registros = await usuarioSheet.post(objetoProcesado);
 
         return registros
 
     } catch (error) {
         console.error("Error al procesar los datos:", error.message)
-        return registros
+        return error.message
     }
 }
 
@@ -124,5 +149,6 @@ module.exports = {
     get,
     getColumna,
     getSiExiste,
-    post
+    post,
+    getPorIdGoogle
 }

@@ -15,7 +15,7 @@
         <h1 class="text-center mb-4">Alta de Usuario Escuela</h1>
         <form action="/usuario/alta" method="POST" class="shadow p-4 bg-light rounded">
             <!-- ID (Solo lectura) -->
-            <div class="mb-3 d-none">
+            <div class="mb-3">
                 <label for="id" class="form-label">ID</label>
                 <input type="text" id="id" name="id" class="form-control" value="<%= user.id %>" readonly>
             </div>
@@ -45,7 +45,7 @@
             </div>
             
             <!-- Clave -->
-            <div class="mb-3">
+            <!-- <div class="mb-3">
                 <label for="family_name" class="form-label">Clave</label>
                 <input name="clave" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Buscar...">
                 <datalist id="datalistOptions">
@@ -53,17 +53,20 @@
                         <option value="<%= escuela %>"><%= escuela %></option>
                     <% }); %>
                 </datalist>
-            </div>
+            </div> -->
 
             <!-- ClaveArticula -->
             <div class="mb-3">
-                <label for="family_name" class="form-label">Clave</label>
-                <input name="claveArticula" class="form-control" list="datalistOptions" id="exampleDataList" placeholder="Buscar...">
-                <datalist id="datalistOptions">
-                    <% claveEscuelas.forEach(escuela => { %>
-                        <option value="<%= escuela %>"><%= escuela %></option>
-                    <% }); %>
-                </datalist>
+                <label for="family_name" class="form-label">Area</label>
+                <select id="area" name="area" class="form-select">
+                    <option selected>Open this select menu</option>
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3" selected>3</option>
+                    <option value="3">4</option>
+                    <option value="5">5</option>
+                    <option value="6">6</option>
+                </select>
             </div>
 
             <!-- Botón de Enviar -->
