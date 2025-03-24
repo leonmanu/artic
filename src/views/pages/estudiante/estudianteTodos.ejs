@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/header') %> 
+</head>
+<body>
+    <%- include('../../partials/spinner') %> 
+    <%- include('../../partials/navbar') %> 
+    
+    <!-- Navbar secundario -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <div class="container">
+            <div class="navbar-brand">
+                <span class="fw-bolder" id="claveEscuela">Admin</span> / Estudiantes salientes
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <div class="container mt-4">
+        <table class="table table-striped table-hover">
+            <thead class="table-primary text-center">
+                <tr>
+                    <th>
+                        <a class="link-dark" href="#">
+                            Estudiante
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down-alt d-none"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                        </a> 
+                        <br>
+                        <input type="search" class="form-control" id="inpEstudiante" type="text" placeholder="Search..">
+                    </th>
+                    <th>
+                        <a class="link-dark" href="#">
+                            Documento
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down-alt d-none"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                        </a> 
+                        <br>
+                        <input id="inpDocumento" placeholder="Search.." type="search" class="form-control">
+                    </th>
+                    <th>
+                        <a class="link-dark" href="#">
+                            Escuela Origen
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down-alt d-none"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                        </a> 
+                         <br>
+                        <input id="inpEscuelaOrigen" placeholder="Search.." type="search" class="form-control">
+                    </th>
+                    <th>
+                        <a class="link-dark" href="#">
+                            Curso
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down-alt d-none"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                        </a> 
+                         <br>
+                        <input id="inpCurso" placeholder="Search.." type="search" class="form-control">
+                    </th>
+                    <th>
+                        <a class="link-dark" href="#">
+                            Escuela Destino
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down-alt d-none"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                        </a> 
+                        <br>
+                        <input id="inpEscuelaDestino" placeholder="Search.." type="search" class="form-control">
+                    </th>
+                    <th>
+                        <a class="link-dark" href="#">
+                            Estado
+                            <i class="bi bi-arrow-down-up"></i>
+                            <i class="bi bi-sort-down-alt d-none"></i>
+                            <i class="bi bi-sort-down d-none"></i>
+                        </a> 
+                        <br>
+                        <select id="inpEstado" class="form-select">
+                            <option value="">Todos</option>
+                        </select>
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="myTable">
+                <% estudiantes.forEach(estudiante => { %>
+                    <% 
+                        // Buscar el traspaso correspondiente al estudiante
+                        const traspaso = traspasos.find(t => t.documento === estudiante.documento);
+                        const escuelaDestino = traspaso ? traspaso.escuelaDestino : 'Sin destino';
+                        const estadoTraspaso = traspaso ? traspaso.estado : 0; 
+                    %>
+                    <tr>
+                        <td class=""><%= estudiante.estudiante || 'Sin nombre' %></td>
+                        <td class="text-center"><%= estudiante.documento || 'Sin documento' %></td>
+                        <td class="text-center"><%= estudiante.claveEscuela || 'Sin escuela' %></td>
+                        <td class="text-center"><%= estudiante.claveCurso || 'Sin curso' %></td>
+                        <td class="text-center"><%= escuelaDestino %></td>
+                        <td class="text-center">
+                            <% if (estadoTraspaso === '1') { %>
+                                <span>pendiente</span>
+                            <% } else if (estadoTraspaso === '2') { %>
+                                <span style="color: green;">confirmado</span>
+                            <% } else if (estadoTraspaso === '3') { %>
+                                <span style="color: red;">rechazado</span>
+                            <% } else { %>
+                                <span>sin traspaso</span>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+            </tbody>
+        </table>
+    </div>
+    <%- include('../../partials/footer') %> 
+
+</body>
+</html>
+
+<script>
+
+$(document).ready(function () {
+    let sortDirection = {}; // Para almacenar la dirección de orden para cada columna
+
+    // Cargar dinámicamente las opciones del select
+    function populateSelect() {
+        var uniqueValues = new Set();
+
+        // Recolecta valores únicos de la última columna
+        $("#myTable tr").each(function () {
+            var cellValue = $(this).find("td:last").text().trim();
+            if (cellValue) uniqueValues.add(cellValue);
+        });
+
+        // Llena el select con los valores únicos
+        var select = $("#inpEstado");
+        select.empty(); // Limpia opciones previas
+        select.append('<option value="">Todos</option>'); // Opción para "sin filtro"
+        uniqueValues.forEach(function (value) {
+            select.append(`<option value="${value.toLowerCase()}">${value}</option>`);
+        });
+    }
+
+    // Aplicar filtros
+    function applyFilters() {
+        $("#myTable tr").each(function () {
+            var row = $(this);
+            var isVisible = true;
+
+            // Recorre cada input y verifica si coincide con la columna correspondiente
+            $("thead input, thead select").each(function (index) {
+                var inputValue = $(this).val().toLowerCase();
+                var cellValue = row.find("td").eq(index).text().toLowerCase();
+
+                // Si el valor no coincide, marca la fila como no visible
+                if (inputValue && cellValue.indexOf(inputValue) === -1) {
+                    isVisible = false;
+                    return false; // Salir del loop si no coincide
+                }
+            });
+
+            // Muestra u oculta la fila según isVisible
+            row.toggle(isVisible);
+        });
+    }
+
+    // Ordenar las filas en función de la columna seleccionada
+function sortTable(columnIndex) {
+    var rows = $("#myTable tr").get();
+    var direction = sortDirection[columnIndex] || 'asc'; // Default to ascending
+
+    rows.sort(function (a, b) {
+        var cellA = $(a).find("td").eq(columnIndex).text().toLowerCase();
+        var cellB = $(b).find("td").eq(columnIndex).text().toLowerCase();
+
+        if (cellA < cellB) {
+            return direction === 'asc' ? -1 : 1;
+        }
+        if (cellA > cellB) {
+            return direction === 'asc' ? 1 : -1;
+        }
+        return 0;
+    });
+
+    // Re-append las filas en el orden correcto
+    $.each(rows, function (index, row) {
+        $("#myTable").append(row);
+    });
+
+    // Cambiar la dirección para la próxima vez que se haga clic
+    sortDirection[columnIndex] = direction === 'asc' ? 'desc' : 'asc';
+
+    // Actualizar los íconos de la columna
+    updateIcons(columnIndex, direction);
+}
+
+// Actualizar los íconos de orden en el encabezado
+function updateIcons(columnIndex, direction) {
+    // Restablecer todos los íconos
+    $("thead th i").addClass("d-none");
+    $("thead th i.bi-arrow-down-up").removeClass("d-none");
+
+    // Seleccionar los íconos de la columna actual
+    var header = $("thead th").eq(columnIndex);
+    var arrowIcon = header.find("i.bi-arrow-down-up");
+    var sortDownIcon = header.find("i.bi-sort-down-alt");
+    var sortUpIcon = header.find("i.bi-sort-down");
+
+    // Mostrar el ícono correcto según la dirección
+    arrowIcon.addClass("d-none");
+    if (direction === 'asc') {
+        sortUpIcon.addClass("d-none");
+        sortDownIcon.removeClass("d-none");
+    } else {
+        sortDownIcon.addClass("d-none");
+        sortUpIcon.removeClass("d-none");
+    }
+}
+
+// Asignar eventos de clic a los encabezados
+$("thead th a").on("click", function (e) {
+    e.preventDefault();
+
+    // Determinar el índice de la columna en función del clic
+    var columnIndex = $(this).closest("th").index();
+
+    // Ordenar la tabla por la columna seleccionada
+    sortTable(columnIndex);
+});
+
+    // Llamar a populateSelect al cargar la página
+    populateSelect();
+
+    // Asignar eventos a los inputs y el select
+    $("thead input, thead select").on("input", applyFilters);
+});
+
+
+
+
+
+</script>

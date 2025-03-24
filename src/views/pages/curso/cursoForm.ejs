@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%- include('../../partials/header') %> 
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- SweetAlert2 para mensajes -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.6.0/dist/jquery.min.js"></script>
+</head>
+<body>
+    <%- include('../../partials/spinner') %> 
+    <%- include('../../partials/navbar') %> 
+
+    <!-- Contenido Principal -->
+    <div class="container mt-4">
+
+        <!-- Título y botones en la misma línea -->
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3><span id="tituloModo"><%= curso ? 'Editar Curso ' : 'Alta de curso' %></span> <span id="cursoClave"><%= curso ? curso.clave : '' %></span></h3>
+            <!-- Botones Editar y Cancelar (solo en modo Edición) -->
+            <div id="botonesEdicion" style="display: none;">
+                <button id="btnEditar" class="btn btn-primary me-2">Editar</button>
+                <button id="btnCancelar" class="btn btn-secondary">Cancelar</button>
+            </div>
+        </div>
+
+        <form id="vacanteForm" class="shadow p-4 bg-light rounded">
+            <!-- ID de la Escuela (Solo lectura) -->
+            <div class="mb-3" style="display: none;">
+                <label for="idEscuela" class="form-label">ID de la Escuela</label>
+                <input type="text" id="idEscuela" name="idEscuela" class="form-control" value="<%= curso ? curso.escuelaClave : user.clave %>" readonly>
+            </div>
+
+             <!-- rowNumber -->
+        <div class="mb-3" style="display: none;">
+            <label for="rowNumber" class="form-label">rowNumber</label>
+            <input type="rowNumber" id="rowNumber" name="rowNumber" class="rowNumber" placeholder="Ej: 30" value="<%= curso ? curso.rowNumber : '' %>" readonly>
+        </div>
+
+            <!-- Grado y División en la misma fila -->
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="grado" class="form-label">Grado</label>
+                    <select id="grado" name="grado" class="form-select">
+                        <option value="">Seleccione un nivel</option>
+                        <option value="1" <%= curso && curso.grado === '1' ? 'selected' : '' %>>1°</option>
+                        <option value="2" <%= curso && curso.grado === '2' ? 'selected' : '' %>>2°</option>
+                        <option value="3" <%= curso && curso.grado === '3' ? 'selected' : '' %>>3°</option>
+                        <option value="4" <%= curso && curso.grado === '4' ? 'selected' : '' %>>4°</option>
+                        <option value="5" <%= curso && curso.grado === '5' ? 'selected' : '' %>>5°</option>
+                        <option value="6" <%= curso && curso.grado === '6' ? 'selected' : '' %>>6°</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="division" class="form-label">División</label>
+                    <div class="input-group">
+                        <input type="text" id="division" name="division" class="form-control" placeholder="Ej: A, B, C" maxlength="1" value="<%= curso ? curso.division : '' %>">
+                        <span class="input-group-text">°</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orientación -->
+            <div class="row mb-3">
+                <div class="col">
+                    <label for="orientacion" class="form-label">Orientación</label>
+                    <select id="orientacion" name="orientacion" class="form-select">
+                        <option value="">Seleccione una Orientación</option>
+                        <option value="Ciencias Sociales" <%= curso && curso.orientacion === 'Ciencias Sociales' ? 'selected' : '' %>>Ciencias Sociales</option>
+                        <option value="Ciencias Naturales" <%= curso && curso.orientacion === 'Ciencias Naturales' ? 'selected' : '' %>>Ciencias Naturales</option>
+                        <option value="Economía y Administración" <%= curso && curso.orientacion === 'Economía y Administración' ? 'selected' : '' %>>Economía y Administración</option>
+                        <option value="Arte" <%= curso && curso.orientacion === 'Arte' ? 'selected' : '' %>>Arte</option>
+                        <option value="Comunicación" <%= curso && curso.orientacion === 'Comunicación' ? 'selected' : '' %>>Comunicación</option>
+                        <option value="Educación Física" <%= curso && curso.orientacion === 'Educación Física' ? 'selected' : '' %>>Educación Física</option>
+                        <option value="Lenguas Extranjeras" <%= curso && curso.orientacion === 'Lenguas Extranjeras' ? 'selected' : '' %>>Lenguas Extranjeras</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="turno" class="form-label">Turno</label>
+                    <select id="turno" name="turno" class="form-select">
+                        <option value="">Seleccione un Turno</option>
+                        <option value="Mañana" <%= curso && curso.turno === 'Mañana' ? 'selected' : '' %>>Mañana</option>
+                        <option value="Tarde" <%= curso && curso.turno === 'Tarde' ? 'selected' : '' %>>Tarde</option>
+                        <option value="Vespertino" <%= curso && curso.turno === 'Vespertino' ? 'selected' : '' %>>Vespertino</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Botón de Enviar -->
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary">
+                    <%= curso ? 'Guardar Cambios' : 'Registrar' %>
+                </button>
+            </div>
+        </form>
+    </div>
+    <%- include('../../partials/footer') %> 
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Script para manejar la edición y cancelación -->
+    <script>
+        $(document).ready(function () {
+            // Verificar si estamos en modo Edición (hay clave de curso)
+            const esModoEdicion = $('#cursoClave').text().trim() !== '';
+
+            // Función para habilitar campos y botones
+            function habilitarFormulario() {
+                $('#vacanteForm input, #vacanteForm select, #vacanteForm button').prop('disabled', false);
+                $('#btnEditar').hide();
+                $('#btnCancelar').show();
+            }
+
+            // Función para deshabilitar campos y botones
+            function deshabilitarFormulario() {
+                $('#vacanteForm input, #vacanteForm select, #vacanteForm button').prop('disabled', true);
+                $('#btnEditar').show();
+                $('#btnCancelar').hide();
+            }
+
+            // Comportamiento inicial
+            if (esModoEdicion) {
+                // En modo Edición, deshabilitar campos y mostrar botones
+                deshabilitarFormulario();
+                $('#botonesEdicion').show();
+            } else {
+                // En modo Alta, habilitar campos y ocultar botones
+                $('#botonesEdicion').hide();
+            }
+
+            // Evento para el botón "Editar"
+            $('#btnEditar').on('click', function () {
+                habilitarFormulario();
+            });
+
+            // Evento para el botón "Cancelar"
+            $('#btnCancelar').on('click', function () {
+                deshabilitarFormulario();
+            });
+
+            // Manejar el envío del formulario
+            $('#vacanteForm').on('submit', function (e) {
+                e.preventDefault(); // Evitar el envío tradicional
+    
+                // Deshabilitar el botón de enviar y mostrar mensaje de espera
+                const submitButton = $(this).find('button[type="submit"]');
+                submitButton.prop('disabled', true).html(`
+                    <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    Espere un momento...
+                `);
+    
+                // Obtener la clave del curso desde el span si existe
+                const cursoClave = $('#cursoClave').text().trim();
+    
+                // Serializar los datos del formulario
+                const formData = $(this).serialize();
+    
+                // URL dinámica
+                const url = esModoEdicion ? '/curso/put/' + cursoClave : '/vacante/post';
+                
+                // Enviar la solicitud AJAX
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        // Restaurar el botón de enviar
+                        submitButton.prop('disabled', false).text(esModoEdicion ? 'Guardar Cambios' : 'Registrar');
+    
+                        // Determinar la clave del curso para redirección
+                        const claveEdit = cursoClave || response.cursoClave;
+    
+                        // Mostrar el mensaje de éxito con SweetAlert2
+                        Swal.fire({
+                            icon: 'success',
+                            title: '¡Éxito!',
+                            text: response.message || 'Operación realizada correctamente.',
+                            showCancelButton: true, // Mostrar botón de cancelar
+                            showDenyButton: true,   // Mostrar botón de denegar
+                            confirmButtonText: 'Aceptar y seguir creando', // Texto del botón de confirmación
+                            denyButtonText: 'Ver/Editar Vacante',         // Texto del botón de denegar
+                            cancelButtonText: 'Volver',                  // Texto del botón de cancelar
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Limpiar el formulario para seguir creando
+                                window.location.href = `/curso/showForm`;
+                            } else if (result.isDenied) {
+                                // Redirigir a la página de ver/editar la vacante creada
+                                window.location.href = `/curso/showForm/${claveEdit}`;
+                            } else if (result.isDismissed) {
+                                // Redirigir a la página anterior o a la lista de vacantes
+                                window.location.href = '/curso';
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        // Restaurar el botón de enviar
+                        submitButton.prop('disabled', false).text(esModoEdicion ? 'Guardar Cambios' : 'Registrar');
+    
+                        // Mostrar el mensaje de error en SweetAlert2
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error',
+                            text: xhr.responseJSON?.message || 'Hubo un error al procesar la solicitud.',
+                        });
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
