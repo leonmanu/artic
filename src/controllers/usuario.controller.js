@@ -38,7 +38,7 @@ const usuarioAnalisis = async (req, res) => {
             }
         }
         else{
-            return res.redirect("/estudiante/todos") // Usuario existe y es admin
+            return res.redirect("/vacante/list") // Usuario existe y es admin
         }
 
     } catch (error) {
