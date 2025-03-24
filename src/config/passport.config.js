@@ -4,7 +4,6 @@ const fs = require('fs');
 
 // Carga las credenciales desde client_secret.json
 const credentials = JSON.parse(process.env.GOOGLE_CLIENT_SECRET);
-console.log("CONFIG_PASSPORT:", credentials);
 
 // Extrae los valores necesarios
 const CLIENT_ID = credentials.web.client_id;
