@@ -17,7 +17,7 @@ passport.use(
             clientID: CLIENT_ID,
             clientSecret: CLIENT_SECRET,
             callbackURL: process.env.NODE_ENV === 'production'
-                ? "https://articulacion.onrender.com/oauth2callback"
+                ? "https://tareas-o2su.onrender.com//oauth2callback"
                 : "http://localhost:5000/oauth2callback",
             passReqToCallback: true,
             scope: ['email', 'profile'],
