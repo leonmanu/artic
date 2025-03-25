@@ -5,7 +5,7 @@ const oauth2 = google.oauth2('v2')
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
-    process.env.process.env.CALLBACK_URL,
+    process.env.CALLBACK_URL
 );
 
 /**
