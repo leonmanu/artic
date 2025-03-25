@@ -25,7 +25,7 @@ const getPorEscuelaClave = async (user) => {
 
         if (!registros.length) {
             console.warn("No se encontraron vacantes.");
-            return "";
+            return [];
         }
 
         // Filtrar cursos por ID de escuela
