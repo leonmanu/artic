@@ -15,7 +15,7 @@
         <h1 class="text-center mb-4">Alta de Usuario Escuela</h1>
         <form action="/usuario/alta" method="POST" class="shadow p-4 bg-light rounded">
             <!-- ID (Solo lectura) -->
-            <div class="mb-3">
+            <div class="mb-3 d-none">
                 <label for="id" class="form-label">ID</label>
                 <input type="text" id="id" name="id" class="form-control" value="<%= user.id %>" readonly>
             </div>
