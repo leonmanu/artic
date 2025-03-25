@@ -30,6 +30,7 @@ const usuarioAnalisis = async (req, res) => {
         if (!resultado.admin) {
             if (tipo === 'Escuela') {
                 user.clave = resultado.usuario.clave
+                req.session.message = resultado.message;
                 return res.redirect("/tarea")
 
             } else {
@@ -59,7 +60,8 @@ const post = (req, res) => {
     const resultado = usuarioService.post(obj, nameJson)
     if (tipo === 'Escuela') {
         if(nivel === 'Secundaria'){
-            return res.redirect("/tarea")
+            req.session.message = "Regitrado correctamente, vuelva a ingresar";
+            return res.redirect("/")
         } else {
             return res.redirect("/estudiante/salientes/" + obj.clave)
         }
