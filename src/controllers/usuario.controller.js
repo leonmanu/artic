@@ -17,7 +17,8 @@ const usuarioAnalisis = async (req, res) => {
 
     try {
         const resultado = await usuarioService.getSiExiste(email, tipo);
-        //console.log("resultado: " + resultado.usuario.clave)
+        console.log("resultado.value: " + resultado.value)
+        console.log("resultado.admin: " + resultado.admin)
 
         if (!resultado.value) { // Usuario no existe
             if (tipo === 'Escuela') {
@@ -39,6 +40,9 @@ const usuarioAnalisis = async (req, res) => {
             }
         }
         else{
+            console.log("user.admin: previo  " + user);
+                user.admin = resultado.admin
+                console.log("user.admin: " + user);
             return res.redirect("/vacante/list") // Usuario existe y es admin
         }
 

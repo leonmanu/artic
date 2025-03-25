@@ -1,4 +1,3 @@
-<!-- Navbar -->
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
     <div class="container-fluid">
         <a class="navbar-brand" href="#">Gestión Escolar</a>
@@ -7,29 +6,28 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav me-auto">
-                <li class="nav-item">
-                    <a class="nav-link active" href="#">Inicio</a>
-                </li>
-
-                <li class="nav-item dropdown" >
-                    <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
-                        data-bs-toggle="dropdown" aria-expanded="false">
-                        Estudiantes
-                    </a>
-                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                        <li><a class="dropdown-item" href="#">Salientes</a></li>
-                        <li><a class="dropdown-item" href="#">Entrantes</a></li>
-                    </ul>
-                </li>
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="/escuela">Escuelas</a>
-                </li> -->
-                
-                <!-- <li class="nav-item">
-                    <a class="nav-link" href="/traspaso">Traspasos</a>
-                </li> -->
+            
+            <ul class="navbar-nav">
+               
+                <!-- Mostrar menú solo si NO es admin -->
+                <% if (!user.admin) { %>
+                    <li class="nav-item">
+                        <a class="nav-link active" href="/tarea">Tareas</a>
+                    </li>
+    
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            Cursos
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                            <li><a class="dropdown-item" href="/curso">Listado</a></li>
+                            <li><a class="dropdown-item" href="/vacante">Vacantes</a></li>
+                        </ul>
+                    </li>
+                <% } %>
             </ul>
+            
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button"
