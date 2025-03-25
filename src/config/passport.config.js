@@ -2,13 +2,10 @@ const passport = require('passport');
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
 const fs = require('fs');
 
-// Carga las credenciales desde client_secret.json
-const credentials = JSON.parse(process.env.GOOGLE_CLIENT_SECRET);
-
 // Extrae los valores necesarios
-const CLIENT_ID = credentials.web.client_id;
-const CLIENT_SECRET = credentials.web.client_secret;
-const CALLBACK_URL = credentials.web.redirect_uris[0];
+const CLIENT_ID = process.env.CLIENT_ID
+const CLIENT_SECRET = process.env.CLIENT_SECRET
+const CALLBACK_URL = process.env.CALLBACK_URL
 
 // Configura la estrategia de Google
 passport.use(
@@ -16,7 +13,7 @@ passport.use(
         {
             clientID: CLIENT_ID,
             clientSecret: CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL,
+            callbackURL: CALLBACK_URL,
             passReqToCallback: true,
             scope: ['email', 'profile'],
             prompt: 'select_account', // Para forzar la selección de cuenta
