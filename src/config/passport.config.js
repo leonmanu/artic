@@ -16,7 +16,7 @@ passport.use(
         {
             clientID: CLIENT_ID,
             clientSecret: CLIENT_SECRET,
-            callbackURL: process.env.CALLBACK_URL,
+            callbackURL: "https://tareas-o2su.onrender.com//oauth2callback",
             passReqToCallback: true,
             scope: ['email', 'profile'],
             prompt: 'select_account', // Para forzar la selección de cuenta
