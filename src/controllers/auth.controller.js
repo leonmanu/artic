@@ -5,9 +5,7 @@ const oauth2 = google.oauth2('v2')
 const oauth2Client = new google.auth.OAuth2(
     process.env.CLIENT_ID,
     process.env.CLIENT_SECRET,
-    process.env.NODE_ENV === 'production'
-        ? 'https://tareas-o2su.onrender.com/oauth2callback'
-        : 'http://localhost:5000/oauth2callback'
+    process.env.CALLBACK_URL,
 );
 
 /**
