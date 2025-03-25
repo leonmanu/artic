@@ -125,7 +125,8 @@
                         <td class="text-center"><%= vacante.estudiantes || '' %></td>
                         <td class="text-center">
                             <% if (vacante.capacidad && vacante.estudiantes) { %>
-                                <%= vacante.capacidad - vacante.estudiantes %>
+                                <% const diferencia = vacante.capacidad - vacante.estudiantes; %>
+                                <%= diferencia >= 0 ? diferencia : 0 %>
                             <% } else { %>
                                 -
                             <% } %>
